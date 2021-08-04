@@ -1,0 +1,16 @@
+<% (0..4).each do |i| %>
+	<% (0..4).each do |j|%>
+		<div class='box_wrapper' id="box<%= i %><%= j %>">
+			<div class='each_box'>
+				<% if @pos_x == i && @pos_y == j %>
+					<div class='robot'>
+						<%= robot_facing(@face) %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	<% end %>
+<% end %>
+<input type="hidden" value="<%= @pos_x %>" id="current_x">
+<input type="hidden" value="<%= @pos_y %>" id="current_y">
+<input type="hidden" value="<%= @face %>" id="current_face">

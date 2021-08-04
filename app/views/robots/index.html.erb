@@ -1,0 +1,111 @@
+<div class='main'>
+	<div class='heading'>The Robot Game</div>
+	<div class='game_board'>
+		<%= render 'game_table' %>
+	</div>
+	<div class="game_controls">
+		<div class='place'>
+			<div class='place_heading'>Place</div>
+			<label>
+				X:<input type="number" id='position_x'>
+			</label>
+			<label>
+				Y:<input type="number" id='position_y'>
+			</label>
+			<div class="place_controls">
+				<div class="place_face" data-direction='north'>^</div>
+				<div class="place_x">
+					<div class="place_face" data-direction='west'><</div>
+					<div class="place_face" data-direction='east'>></div>
+				</div>
+				<div class="place_face" data-direction='south'>v</div>
+			</div>
+			<button class="place_btn" id='place_button'>Place</button>
+			<span class="place_error" id="places_error"> Incorrect Positions </span>
+			<span class="place_error" id="direction_error"> Select Direction First </span>
+		</div>
+		<div class='movement_buttons'>
+			<button class="move_button">Move</button>
+			<span class="wrong_movement">Cannot Move to this point</span>		
+			<button class="rotate_button">Left</button>			
+			<button class="rotate_button">Right</button>			
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('.place_face').on('click', function() {
+		$('.active_button').toggleClass('active_button')
+		$(this).addClass('active_button')
+	})
+	$('#place_button').on('click', function(){
+		console.log("clicked")
+		if ($('.active_button').data('direction') == undefined ){
+			$('#direction_error').show()
+		} else {
+			$('#direction_error').hide()
+			var pos_x = $('#position_x').val()
+			var pos_y = $('#position_y').val()
+			var face = $('.active_button').data('direction')
+			console.log(face)
+			$.ajax({
+				url: '/robot/place',
+				type: 'Get',
+				data: {
+					x: pos_x,
+					y: pos_y,
+					f: face
+				},
+				success: function(data){
+					if (data.success == false) {
+						$('#places_error').show()
+					} else {
+						$('.game_board').html(data)
+						$('#places_error').hide()
+					}
+				}
+			})
+		}
+	})
+
+	$('.move_button').on('click', function(){
+		var pos_x = $('#current_x').val()
+		var pos_y = $('#current_y').val()
+		var face = $('#current_face').val()
+		$.ajax({
+			url: '/robot/move',
+			type: 'Get',
+			data: {
+				x: pos_x,
+				y: pos_y,
+				f: face
+			},
+			success: function(data){
+				if (data.success == false) {
+					$('.wrong_movement').show()
+				} else {
+					$('.game_board').html(data)
+					$('.wrong_movement').hide()
+				}
+			}
+		})
+	})
+
+	$('.rotate_button').on('click', function(){
+		var pos_x = $('#current_x').val()
+		var pos_y = $('#current_y').val()
+		var face = $('#current_face').val()
+		$.ajax({
+			url: '/robot/rotate',
+			type: 'Get',
+			data: {
+				x: pos_x,
+				y: pos_y,
+				f: face,
+				r: $(this).html()
+			},
+			success: function(data){
+				$('.game_board').html(data)
+			}
+		})
+	})
+</script>
