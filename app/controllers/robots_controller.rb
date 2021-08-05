@@ -4,20 +4,12 @@ class RobotsController < ApplicationController
 	end
 
 	def place
-		if legal_position
-			return render partial: 'robots/game_table'
-		else
-			return render json: {success: false}
-		end
+		check_position_and_render
 	end
 
 	def move
 		next_move
-		if legal_position
-			return render partial: 'robots/game_table'
-		else
-			return render json: {success: false}
-		end
+		check_position_and_render
 	end
 
 	def rotate
@@ -29,9 +21,7 @@ class RobotsController < ApplicationController
 		elsif @rotation == 'Left'
 		 	indexx = indexx > 0 ? indexx - 1 : directions.length - 1
 		end
-		puts indexx
 		@face = directions[indexx]
-		puts @face
 		return render partial: 'robots/game_table'
 	end
 
@@ -56,6 +46,14 @@ class RobotsController < ApplicationController
 			@pos_y+=1
 		when 'west'
 			@pos_y-=1
+		end
+	end
+
+	def check_position_and_render
+		if legal_position
+			return render partial: 'robots/game_table'
+		else
+			return render json: {success: false}
 		end
 	end
 end

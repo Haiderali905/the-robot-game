@@ -38,7 +38,6 @@
 		$(this).addClass('active_button')
 	})
 	$('#place_button').on('click', function(){
-		console.log("clicked")
 		if ($('.active_button').data('direction') == undefined ){
 			$('#direction_error').show()
 		} else {
@@ -46,7 +45,6 @@
 			var pos_x = $('#position_x').val()
 			var pos_y = $('#position_y').val()
 			var face = $('.active_button').data('direction')
-			console.log(face)
 			$.ajax({
 				url: '/robot/place',
 				type: 'Get',
@@ -94,6 +92,9 @@
 		var pos_x = $('#current_x').val()
 		var pos_y = $('#current_y').val()
 		var face = $('#current_face').val()
+		if (face.length == 0) {
+			return null
+		}
 		$.ajax({
 			url: '/robot/rotate',
 			type: 'Get',
